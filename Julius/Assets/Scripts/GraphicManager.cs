@@ -4,15 +4,15 @@ using UnityEngine;
 using UnityEngine.UI;
 public class GraphicManager : MonoBehaviour
 {
-
+    public Toggle fullScreenToggle;
     public Dropdown resolutionDropdown;
-    private string fullscreenStr;
+    private string fullScreenStr;
 
     // Start is called before the first frame update
     void Start()
     {
         resolutionDropdown.value = PlayerPrefs.GetInt("SavedResolution");
-        fullscreenStr = PlayerPrefs.GetString("SavedFullscreen");
+        fullScreenStr = PlayerPrefs.GetString("SavedFullscreen");
 
         // To set resolution on start
         if(resolutionDropdown.value == 0)
@@ -29,13 +29,15 @@ public class GraphicManager : MonoBehaviour
         }
 
         // To set fullscreen on start 
-        if(fullscreenStr == "true")
+        if(fullScreenStr == "true")
         {
             Screen.fullScreen = true;
+            fullScreenToggle.isOn = true;
         }
-        else if(fullscreenStr == "false")
+        else if(fullScreenStr == "false")
         {
             Screen.fullScreen = false;
+            fullScreenToggle.isOn = false;
         }
         QualitySettings.SetQualityLevel(5); //To set quality as ultra       
     }

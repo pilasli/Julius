@@ -2873,6 +2873,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 926a6eacf8e353847b0b3d5ce97c3b77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fullScreenToggle: {fileID: 916624684}
   resolutionDropdown: {fileID: 2137844485}
 --- !u!4 &568233979
 Transform:
