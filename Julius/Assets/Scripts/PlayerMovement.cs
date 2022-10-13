@@ -24,14 +24,14 @@ public class PlayerMovement : MonoBehaviour
     private bool canAirJump = false;
     private float jumpPower = 14f;
     private float lastJumpTime = -100f;
-    private float coyoyeTime = 0.1f;
+    private float coyoteTime = 0.1f;
     private float coyoteCounter;
     private float jumpBufferTime = 0.1f;
     private float jumpBufferCounter;
 
     private bool isWalking;
     private bool isRunning;
-    private float walkSpeed = 200f;
+    private float walkSpeed = 300f;
     private float runSpeed = 400f;
     private bool canMove = true;
     private bool isDead = false;
@@ -64,12 +64,12 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
-        if(_gameManager == null)
+        if (_gameManager == null)
         {
             Debug.LogError("The GameManager on PlayerMovement is <null>");
         }
-        _uiManager =  GameObject.Find("Canvas").GetComponentInParent<UIManager>();
-        if(_uiManager == null)
+        _uiManager = GameObject.Find("Canvas").GetComponentInParent<UIManager>();
+        if (_uiManager == null)
         {
             Debug.LogError("The UI Manager on PlayerMovement is <null>");
         }
@@ -95,7 +95,7 @@ public class PlayerMovement : MonoBehaviour
 
         // Set a bool veriable to understand we are on ground or not
         isGrounded = Physics2D.OverlapCapsule(groundCheck.position, new Vector2(0.5f, 0.3f), CapsuleDirection2D.Horizontal, 0, groundLayer);
-        
+
         if (isGrounded)
         {
             // To solve extra jump problem (because of Ground check system) a timer is added  
@@ -125,11 +125,11 @@ public class PlayerMovement : MonoBehaviour
                 rb.velocity = new Vector2(directionX * Time.deltaTime, rb.velocity.y);
             }
         }
- 
+
         // Manage coyote time, for a while we can jump even if we have left platform
         if (isGrounded)
         {
-            coyoteCounter = coyoyeTime;
+            coyoteCounter = coyoteTime;
         }
         else
         {
@@ -147,7 +147,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Jump, on ground
-        if (jumpBufferCounter >= 0 && !isDead && canJump && coyoteCounter > 0f)    
+        if (jumpBufferCounter >= 0 && !isDead && canJump && coyoteCounter > 0f)
         {
             canJump = false;
             CreateDust("jumpDust");
@@ -176,11 +176,11 @@ public class PlayerMovement : MonoBehaviour
         {
             camTarget.localPosition = new Vector3(aheadAmountX, aheadAmountY, camTarget.localPosition.z);
         }
-        else if(Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow) && isGrounded && Input.GetAxisRaw("Horizontal") == 0)
+        else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow) && isGrounded && Input.GetAxisRaw("Horizontal") == 0)
         {
             camTarget.localPosition = new Vector3(aheadAmountX, aheadAmountY - 8f, camTarget.localPosition.z);
         }
-        else if(Input.GetKey(KeyCode.F) && isGrounded && Input.GetAxisRaw("Horizontal") == 0)
+        else if (Input.GetKey(KeyCode.F) && isGrounded && Input.GetAxisRaw("Horizontal") == 0)
         {
             camTarget.localPosition = new Vector3(aheadAmountX + 8f, aheadAmountY, camTarget.localPosition.z);
         }
@@ -195,6 +195,7 @@ public class PlayerMovement : MonoBehaviour
             StartCoroutine(Dash());
             canAirJump = true;
         }
+
         //Slide, we can slide on ground
         if (Input.GetButtonDown("Dash_Slide") && canSlide && isGrounded)
         {
@@ -373,20 +374,20 @@ public class PlayerMovement : MonoBehaviour
         {
             Damage();
         }
-        if(other.gameObject.CompareTag("LiveUpgrade"))
+        if (other.gameObject.CompareTag("LiveUpgrade"))
         {
             Destroy(other.gameObject);
             UpgradeLive();
         }
-        if(other.tag == "DeadZone")
+        if (other.tag == "DeadZone")
         {
             GameOverProcess();
         }
-        if(other.gameObject.CompareTag("Finish"))
+        if (other.gameObject.CompareTag("Finish"))
         {
             Debug.Log("Reached finish flag");
             directionX = 0;
-            canMove = false;            
+            canMove = false;
             WinGameProcess();
         }
     }
@@ -394,11 +395,11 @@ public class PlayerMovement : MonoBehaviour
     // Check for collisions
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if(other.gameObject.CompareTag("Saw"))
+        if (other.gameObject.CompareTag("Saw"))
         {
             Damage();
         }
-        if(other.gameObject.CompareTag("Axe"))
+        if (other.gameObject.CompareTag("Axe"))
         {
             Damage();
         }
@@ -407,16 +408,16 @@ public class PlayerMovement : MonoBehaviour
     // Damage calculations for player
     public void Damage()
     {
-        if(canTakeDamage)
+        if (canTakeDamage)
         {
-            if(lives > 0)
+            if (lives > 0)
             {
                 lives--;
                 _uiManager.UpdateLives(lives, numOfLives);
 
                 StartCoroutine("HurtRoutine");
                 rb.AddForce(-transform.forward * 500);
-                if(lives < 1)
+                if (lives < 1)
                 {
                     isDead = true;
                     animator.SetTrigger("IsDead");
@@ -437,7 +438,7 @@ public class PlayerMovement : MonoBehaviour
             numOfLives++;
             lives = numOfLives;
             _uiManager.UpdateNumOfLives(numOfLives);
-        }     
+        }
     }
 
     // Game over process
